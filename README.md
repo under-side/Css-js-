@@ -1,5 +1,6 @@
 # Gallery
 利用最近学习的HTML+Css+Js来实现该样例，通过该样例使自己对这三个技术有更加深入的理解。
+该样例适配了市面上主流的浏览器：Chrome、火狐、Opera等。 
 
 ### 思路分析：
 
@@ -18,3 +19,9 @@
       -  是利用js代码去根据搭建的HTML模板获取与输入文档。并利用js去操纵html的交互和改变。
    3. D：Data
       - 是为文档中添加数据的部分。一般为后台获取数据，然后利用js将其添加到文档中。
+3. 画廊的分析结构图
+利用VCD模型分解法分析的画廊的层级结构图：
+![画廊层级结构图](https://github.com/under-side/Gallery/blob/master/%E8%B5%84%E6%96%99/%E5%B1%82%E7%BA%A7%E7%BB%93%E6%9E%84.png "画廊的层级结构图")
+
+利用VCD模型分解法分析的画廊的盒模型图：
+![画廊的盒模型图](https://github.com/under-side/Gallery/blob/master/%E8%B5%84%E6%96%99/%E7%94%BB%E5%BB%8A%E7%9B%92%E6%A8%A1%E5%9E%8B.png "画廊的盒模型图")
