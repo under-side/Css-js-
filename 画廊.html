@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>海报画廊</title>
+<style type="text/css">
+* {
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	background-color: #fff;
+	color: #555;
+	font-family: 'Avenir Next', 'Lantinghei SC';
+	font-size: 14px;
+	/*-webkit-font-smoothing：none | subpixel-antialiased | antialiased
+     *none：对低像素的文本比较好
+     *subpixel-antialiased：默认值
+     *antialiased：抗锯齿
+
+     *-moz-osx-font-smoothing是mozilla给特定操作系统推出的特性增强
+     *设置grayscale对于图标字体表现更清晰，减轻次像素渲染带来的相邻像素色彩污染问题
+     */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	
+	/* 使body标签下的子标签都不能选中文字 */
+	-webkit-user-select:none; 
+ 	-moz-user-select:none; 
+}
+
+.wrap {
+	width: 100%;
+	height: 600px;
+	position: absolute;
+	/* 下面两行代码是该标签居中与其父标签 */
+	top: 50%;
+	margin-top: -300px;
+	background-color: #333;
+	overflow: hidden;
+	/* 改属性是将该标签下的子元素获取3D效果。为0时，则子元素没有3D的效果
+	该属性的值表示3D效果的视觉距离，即，从多远 角度看3D效果。值越小则
+	视觉距离就越近，效果就越明显。 */
+	perspective: 800px;
+	-webkit-perspective: 800px;
+	-moz-perspective: 800px;
+	-o-perspective: 800px;
+	-ms-perspective: 800px;
+}
+
+/* 图片的样式 */
+.photo {
+	width: 260px;
+	height: 320px;
+	position: absolute;
+	z-index: 1;
+	box-shadow: 0 0 1px rgba(0, 0, 0, .01);
+}
+
+.photo .photo-wrap {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	/* 该属性表示保留其标签下的子元素的3D转换。
+            该属性有两个值flat和preserve-3d。flat表示
+             不保留子元素的3D转换，另一个则保留。 */
+	-webkit-transform-style: preserve-3d;
+	-moz-transform-style: preserve-3d;
+	-o-transform-style: preserve-3d;
+	-ms-transform-style: preserve-3d;
+	/* 过渡动画样式：
+	transition: property duration timing-function delay;
+	transition-property	规定设置过渡效果的 CSS 属性的名称。
+    transition-duration	规定完成过渡效果需要多少秒或毫秒。
+    transition-timing-function	规定速度效果的速度曲线。
+    transition-delay	定义过渡效果何时开始。 */
+	transition: all 1s;
+	-moz-transition: all 1s; /* Firefox 4 */
+	-webkit-transition: all 1s; /* Safari 和 Chrome */
+	-o-transition: all 1s; /* Opera */
+	-ms-transition: all 1s; /* Opera */
+}
+
+/* 该标签共同作用于side-front和side-back中 */
+.photo .photo-wrap .side {
+	width: 100%;
+	height: 100%;
+	background-color: #eee;
+	position: absolute;
+	/* top和right都设置为0，表示side标签与其父标签photo位置一样，没有偏移 */
+	top: 0;
+	right: 0;
+	padding: 20px;
+	/*利用盒模型属性，表示该标签的所有内容都不会操作该盒的范围*/
+	box-sizing: border-box;
+	/* 设置其子元素，该属性定义当元素不面向屏幕时是否可见 */
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden; /* Chrome 和 Safari */
+	-moz-backface-visibility: hidden; /* Firefox */
+	-o-backface-visibility: hidden; /* Firefox */
+	-ms-backface-visibility: hidden; /* Internet Explorer */
+}
+
+/* 前面视图旋转0度 */
+.photo .photo-wrap .side-front {
+	-webkit-transform: rotateY(0deg);
+	-moz-transform: rotateY(0deg);
+	-o-transform: rotateY(0deg);
+	-ms-transform: rotateY(0deg);
+}
+
+.photo .photo-wrap .side-front .image {
+	width: 100%;
+	height: 250px;
+	/*  当图片的高度小于设置的250px时，将会由于line-height属性，使其垂直居中显示 */
+	line-height: 250px;
+	/* 超出设置的区域，则隐藏起来，不显示 */
+	overflow: hidden;
+}
+
+/* 该种表示法，可以获取指定层级路径下的标签引用，对其添加样式 */
+.photo .photo-wrap .side-front .image img {
+	width: 100%;
+	/*使高度不够的图片居中显示*/
+	vertical-align: middle;
+}
+
+.photo .photo-wrap .side-front .caption {
+	text-align: center;
+	font-size: 16px;
+	line-height: 50px;
+}
+
+/* 将其背面旋转180度 */
+.photo .photo-wrap .side-back {
+	-webkit-transform: rotateY(180deg);
+	-moz-transform: rotateY(180deg);
+	-o-transform: rotateY(180deg);
+	-ms-transform: rotateY(180deg);
+}
+
+.photo .photo-wrap .side-back .desc {
+	color: #666;
+	font-size: 14px;
+	line-height: 1.5em;
+}
+
+/* 设置当前选中的photo样式 */
+.photo-center {
+	/*水平、垂直居中显示的设置：
+      position:absolute;
+      left:50%;
+      right:50%;
+      margin-left: 其所在区域块宽度的一半--负值
+      margin-top: 其所在区域块高度的一半--负值 
+               其他为0*/
+    position:absolute;
+	left: 50%;
+	top: 50%;
+	margin: -160px 0 0 -130px;
+	z-index: 2;
+}
+
+/* 新增两个标签photo-front和photo-bace。用这两标签去表示photo的两个状态的切换 */
+.photo-front .photo-wrap {
+	-webkit-transform: rotateY(0deg);
+	-moz-transform: rotateY(0deg);
+	-o-transform: rotateY(0deg);
+	-ms-transform: rotateY(0deg);
+}
+/* 该种写法是将photo-back标签样式中的属性作用在photo-wrap */
+.photo-back .photo-wrap {
+	-webkit-transform: rotateY(180deg);
+	-moz-transform: rotateY(180deg);
+	-o-transform: rotateY(180deg);
+	-ms-transform: rotateY(180deg);
+}
+
+
+/* 增加导航栏样式 */
+.nav {
+	width: 80%;
+	height: 30px;
+	line-height: 30px;
+	/* 居中 显示导航栏*/
+	position: absolute;
+	left: 10%;
+	bottom: 20px;
+	z-index: 3;
+	text-align: center;
+}
+
+.nav .item{
+     display: inline-block;
+     width: 30px;
+     height: 30px;
+     cursor: pointer;
+     background-color: #aaa;
+     text-align: center;
+     border-radius:50px;
+     
+     /* 每个item缩放为0.5 */
+     transform:scale(.5);
+    -webkit-transform: scale(.5);
+    -moz-transform: scale(.5);
+    -o-transform: scale(.5);
+    -ms-transform: scale(.5);
+    
+      /* 过渡动画操作，将其所有的动画效果都在0.5s内完成 */
+      transition: all .5s;
+      -webkit-transition: all .5s;
+      -moz-transition: all .5s;
+      -o-transition: all .5s;
+      -ms-transition: all .5s;
+}
+/* 选中的item缩放改为1 */
+.nav .item_current{
+     transform:scale(1);
+     -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -o-transform: scale(1);
+    -ms-transform: scale(1);
+}
+.nav .item:AFTER {
+	content: '\e965';
+	font-family: 'icomoon';
+	font-size: 80%;
+	display: inline-block;
+	color: #fff;
+	opacity:0;
+}
+
+.nav .item_current:after{
+    /* 不透明度。1位完全不透明，0为完全透明 */ 
+    opacity:1; 
+}
+
+.nav .item_back{
+    background-color: #555;
+    transform:rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    -o-transform: rotateY(180deg);
+    -ms-transform: rotateY(180deg);
+}
+
+/* 样式优化 */
+.photo{
+    /* 实现过度动画，使其过度更加的圆滑 */
+	transition: all .5s;
+    -moz-transition: all .5s; /* Firefox 4 */
+    -webkit-transition: all .5s; /* Safari 和 Chrome */
+    -o-transition: all .5s; /* Opera */
+    -ms-transition: all .5s; /* IE */
+	
+	/*该部分是为了优化photo初始化显示操作，让所有的图片都从中间的位置开始分发*/
+	left: 50%;
+	top: 50%;
+	margin: -160px 0 0 -130px;
+}
+.photo-wrap{
+	 transform-origin: 0 50%; 
+}
+.photo-front .photo-wrap{
+
+     -webkit-transform:translate(0px,0px) rotateY(0deg);
+     -moz-transform:translate(0px,0px) rotateY(0deg);
+     -o-transform:translate(0px,0px) rotateY(0deg);
+     -ms-transform:translate(0px,0px) rotateY(0deg);
+}
+.photo-back .photo-wrap{
+
+     -webkit-transform:translate(260px,0px) rotateY(180deg);
+     -moz-transform:translate(260px,0px) rotateY(180deg);
+     -o-transform:translate(260px,0px) rotateY(180deg);
+     -ms-transform:translate(260px,0px) rotateY(180deg);
+}
+</style>
+</head>
+<body onselectstart="return false;">
+	<!-- 将建立的基本视图，转换为模板，去利用js动态的创建HTML代码 -->
+	<div class="wrap" id="wrap">
+		<!-- div.photo负责图片的位移和旋转动画操作 -->
+		<div class="photo photo-front" onclick="turn(this);"
+			id="photo_{{index}}">
+			<!-- div.photo-wrap负责图片的3D旋转操作 -->
+			<div class="photo-wrap">
+				<div class="side side-front">
+					<p class="image">
+						<img src="images/{{img}}">
+					</p>
+					<p class="caption">{{caption}}</p>
+				</div>
+				<div class="side side-back">
+					<p class="desc">{{desc}}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+<!-- 引入数据信息 -->
+<script type="text/javascript" src="images/data.js"></script>
+
+<script type="text/javascript">
+
+/* 获取文档的对象引用 */
+var doc = window.document;
+
+/* 写一个通用函数，用于获取标签对象 */
+function g(selector) {
+	 return selector.substring(0, 1) == '.' ? 
+			 doc.getElementsByClassName(selector.substring(1)) : 
+				 doc.getElementById(selector.substring(1));
+}
+
+/*
+ *该方法是对Math中的random方法的扩充，在该项目中的作用有：
+ *1，随机数生成函数，在给定的范围内(random([min, max]))随机生成一个值，
+ *2，因为此案例要在 20 张海报中随机选取一张居中显示，以及在左右两个分区内随机摆放
+ *3，剩余海报，因为海报数量和左右区域都是有限制的，所以必须在给定范围内生成随机数。
+ *4，传入的参数 range 是一个包含两个数值的数组，这两个数值即是给定范围的最小值(包含)和最大值(包含)
+ *Math.random() 随机生成介于 0.0 ~ 1.0 之间的一个伪随机数
+ */
+function random(range){
+    var min = Math.min(range[0], range[1]);
+    var max = Math.max(range[0], range[1]);
+    var diff = max - min;
+    /*
+     *例如 [1, 20]，则 diff = 19 --> 0 <= Math.round(Math.random() * diff) <= 19
+     *然后再加上最小值，即可随机生成 1 ~ 20 之间的任意数，如果使用 Math.floor() 则
+     *生成 1 ~ 19 之间的任意数，使用 Math.ceil() 则生成 2 ~ 20 之间的任意数
+     */
+    var number = Math.round(Math.random() * diff) + min;
+    return number;
+}
+
+// 6.计算左右分区的范围，使其他海报的显示不会超出此范围
+function range(){
+    /*{left: {x: [左侧区域 left 的最小值, 左侧区域 left 的最大值], y: [左侧区域 top 的最小值, 左侧区域 top 的最大值]}, 
+     *right: {x: [右侧区域 left 的最小值, 右侧区域 left 的最大值], y: [右侧区域 top 的最小值, 右侧区域 top 的最大值]}}
+     */
+     /*定义一个数组用于存储左右图片区域显示的范围
+     * 该中存储方法利用的是js中的json存储数据对象的方法。
+     * 访问对象属性时使用的都是点表示法。使用.可以获取json中的对象引用。
+     */
+    var range = {
+        left: {
+            x: [], 
+            y: []
+        }, 
+        right: {
+            x: [], 
+            y: []
+        }
+    };
+    //获取最外围容器的宽度和高度
+    var wrap = {
+        width: g('#wrap').clientWidth,
+        height: g('#wrap').clientHeight
+    };
+    //获取每一张海报的宽度和高度，因为海报的大小都是一样的，所以取第一张
+    var photo = {
+        width: g('.photo')[0].clientWidth,
+        height: g('.photo')[0].clientHeight
+    };
+    //按照自己想要显示的区域进行计算，左右区域的高度 (top) 范围是一样的
+    range.left.x = [0 - photo.width / 4 + 130, wrap.width / 2 - photo.width * 5 / 4 + 130];
+    range.left.y = [0 - photo.height / 4 + 160, wrap.height - photo.height * 3 / 4 + 160];
+    range.right.x = [wrap.width / 2 + photo.width / 4 + 130, wrap.width - photo.width / 4 + 130];
+    range.right.y = range.left.y;
+
+    return range;
+    
+}
+
+/* 获取引入的数据对象 */
+var data=data;
+
+/* 根据模板添加photo添加到div.wrap */
+function addPhotos() {
+	/* 获取模板HTML */
+	var template = g('#wrap').innerHTML;
+	/* 声明添加的HTML代码字符串 */
+	var html = [];
+	
+	var nav=[];
+		
+	//该中循环模式是以key来循环，s为字符串for(s in data)
+	for(var i=0;i<data.length;i++){
+		var _template=template.replace('{{index}}',i+1)
+		                      .replace('{{img}}',data[i].img)
+		                      .replace('{{caption}}',data[i].caption)
+		                      .replace('{{desc}}',data[i].desc);
+		html.push(_template);
+		
+		var _nav='<span id="nav_' + (i + 1) + '" onclick="turn(g(\'#photo_' + (i + 1) + '\'))" class="item"></span>';
+		nav.push(_nav);
+	} 
+	
+	html.push('<div class="nav">'+nav.join('')+'</div>');
+	
+	/* 将动态组成的html添加到HTML文档中 */
+    g('#wrap').innerHTML=html.join('');
+	
+	
+    /*  当图片添加成功后，进行排序，并随机生成一个中间图片 */
+    rsort(random([0,data.length]));
+    
+}
+
+addPhotos();
+
+/* 排序添加的图片 */
+function rsort( n ) {
+	
+	var index=n;
+	//js约定，如果一个变量是临时的，则使用_表示
+	var _photo=g('.photo');
+	var photos=[];
+	for(var i=0;i<_photo.length;i++){
+		_photo[i].style["transform"]
+		=_photo[i].style['-webkit-transform']
+		=_photo[i].style['-moz-transform']
+		=_photo[i].style['-o-transform']
+		=_photo[i].style['-ms-transform']
+		= 'scale(1.3)';
+		
+		//每次排序时，去除className中的photo-center
+		_photo[i].className='photo photo-front';
+		
+		//去除每个photo中的top和left值
+		_photo[i].style.top='';
+		_photo[i].style.left='';
+		
+		photos.push(_photo[i]);
+	}
+
+	//排序时，再次为选中的photo的className添加photo-center
+	var center_elem = g('#photo_'+index);
+	center_elem.className += ' photo-center';
+	
+	
+	//从数组中删除选中的中间的photo,由于photo从0开始存储数据，则想要删除n，需要-1
+	photos.splice(index-1, 1);
+	
+	//将所有的图片转换为左右两部分
+	var photo_left=photos.splice(0, Math.round(photos.length/2));
+	var photo_right=photos;
+	
+	var ranges=range();
+	
+
+	for(var i=0;i<photo_left.length;i++){
+		var photo=photo_left[i];
+		
+		//遍历左边分组的图片，为每张图片增加样式，随机其位置
+		 photo.style.left = random(ranges.left.x)+'px';
+         photo.style.top = random(ranges.left.y)+'px';
+         /*一般来说，访问对象属性时使用的都是点表示法，不过，在 JavaScript 中也可以使用方括号表示法来访问
+          *对象的属性。在使用方括号语法时，应该将要访问的属性以字符串的形式放在方括号中，如下面的例子所示:
+             alert(person["name"]); //"Nicholas"
+             alert(person.name); //"Nicholas"
+          *方括号语法的主要优点是可以通过变量来访问属性，如果属性名中包含会导致语法错误的字符，或者属性名
+          *使用的是关键字或保留字，也可以使用方括号表示法。例如：
+             person["first name"] = "Nicholas";
+          *通常，除非必须使用变量来访问属性，否则建议使用点表示法。(《JavaScript 高级程序设计》P85)
+          */
+         //对每张图片都进行随机的角度旋转，和缩放动画操作
+         photo.style["transform"]
+         =photo.style['-webkit-transform']
+         =photo.style['-moz-transform']
+         =photo.style['-o-transform']
+         =photo.style['-ms-transform']
+         ='rotate('+random([-150,150])+'deg) scale(1)';
+	}
+	for(var i=0;i<photo_right.length;i++){
+		var photo=photo_right[i];
+		
+		//遍历左边分组的图片，为每张图片增加样式，随机其位置
+		 photo.style.left = random(ranges.right.x)+'px';
+         photo.style.top = random(ranges.right.y)+'px';
+         
+         photo.style["transform"]
+         =photo.style['-webkit-transform']
+         =photo.style['-moz-transform']
+         =photo.style['-o-transform']
+         =photo.style['-ms-transform']
+         ='rotate('+random([-150,150])+'deg) scale(1)';
+	}
+	
+	
+	//初始化导航栏,让多有的nav的子标签统一初始化为item
+	var nav=g('.item');
+	for(var s=0;s<nav.length;s++){
+		nav[s].className='item';
+	}
+	
+	var nav_elem=g('#nav_'+index);
+	nav_elem.className +=' item_current';
+} 
+
+/* 负责点击旋转操作 */
+function turn(elem) {
+	
+	var cls=elem.className;
+	
+	var n=elem.id.split('_')[1];
+	
+    //判断当前点击的是否为中间photo，不是则直接返回，并重新排序，并使点击在中间位置。是，则处理翻转操作
+	if(!/photo-center/.test(cls)){
+		return rsort(n);
+	}
+    
+	if(/photo-front/.test(cls)){
+		cls=cls.replace(/photo-front/,"photo-back");
+	}else{
+		cls=cls.replace(/photo-back/,"photo-front");
+	}
+	elem.className=cls;
+
+	//对当点击的是中间photo时，进行导航栏的翻转操作
+	var nav_elem=g('#nav_'+n);
+	
+	//如果className中没有item_back，则添加该样式。如果有，则去除其className
+	if(!/item_back/.test(nav_elem.className)){
+		nav_elem.className += ' item_back';
+	}else{
+		nav_elem.className = nav_elem.className.replace(/item_back/,'');
+	}
+}
+
+</script>
+</html>
