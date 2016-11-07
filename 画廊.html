@@ -259,9 +259,11 @@ body {
 	top: 50%;
 	margin: -160px 0 0 -130px;
 }
+/*开始执行js中的rsort方法之前，将图片都放置在中间位置，然后执行rsort方法去分发图片位置*/
 .photo-wrap{
 	 transform-origin: 0 50%; 
 }
+/*若为photo-front则不执行任何动画*/
 .photo-front .photo-wrap{
 
      -webkit-transform:translate(0px,0px) rotateY(0deg);
@@ -269,6 +271,8 @@ body {
      -o-transform:translate(0px,0px) rotateY(0deg);
      -ms-transform:translate(0px,0px) rotateY(0deg);
 }
+	
+/*当当前的className中为photo-back属性，则向photo-wrap中添加点击右移动一段距离后恢复的动画操作*/
 .photo-back .photo-wrap{
 
      -webkit-transform:translate(260px,0px) rotateY(180deg);
